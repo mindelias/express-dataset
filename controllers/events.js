@@ -90,9 +90,9 @@ const getByActor = (id, callback) => {
   });
 };
 
-const eraseEvents = (id, callback) => {
-  const sql = `DELETE FROM event WHERE id = ?`;
-  const params = [id];
+const eraseEvents = (callback) => {
+  const sql = `DELETE * FROM event`;
+  const params = [];
   db.run(sql, params, (err, row) => {
     if (err) {
       callback(err, row);

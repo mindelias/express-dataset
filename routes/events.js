@@ -65,7 +65,7 @@ router.post("/", async (req, res, next) => {
   }
 });
 
-router.delete("/:id", (req, res, next) => {
+router.delete("/", (req, res, next) => {
   const params = req.params.id;
   try {
     function callBack(err, rows) {
