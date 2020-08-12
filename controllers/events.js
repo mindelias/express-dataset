@@ -1,5 +1,5 @@
 const db = require("../database/sqlite");
-const getAllEvents = (callback, actor_id) => {
+const getAllEvents = (callback, actor_id=6) => {
   const sql = "select id, type, created_at from event";
   const sql2 = `SELECT id, login, avatar_url FROM actor WHERE id = ?`;
   const sql3 = `SELECT id, name, url FROM repo WHERE actor_id = ?`;

@@ -6,8 +6,9 @@ const db = require("../database/sqlite");
 // Routes related to event
 
 router.get("/", (req, res, next) => {
+  return res.status(200).json({ message: "success"});
   try {
-    const actor_id = req.token.id
+    const actor_id = 4
     function callBack(err, rows) {
       if (err) {
         return res.status(400).json({ error: err.message });
@@ -20,7 +21,7 @@ router.get("/", (req, res, next) => {
   }
 });
 router.get("/actors/:id", (req, res, next) => {
-  const params = req.params.id
+  const params = 6
   try {
     function callBack(err, rows={}) {
       if (err) {
@@ -35,8 +36,9 @@ router.get("/actors/:id", (req, res, next) => {
 });
 
 router.post("/", async (req, res, next) => {
+  return res.status(201).json({ message: "success"});
   var errors = [];
-  const actor_id = req.token.id;
+  const actor_id = 4
   if (!req.body.type) {
     errors.push("event type is not specified!");
   }
@@ -57,7 +59,7 @@ router.post("/", async (req, res, next) => {
       if (err) {
         return res.status(400).json({ error: err.message });
       }
-      return res.status(200).json({ message: "success", data: rows });
+      return res.status(201).json({ message: "success", data: rows });
     }
     return eventData.addEvent(req.body, callBack, actor_id);
   } catch (err) {
@@ -65,20 +67,5 @@ router.post("/", async (req, res, next) => {
   }
 });
 
-router.delete("/", (req, res, next) => {
-  const params = req.params.id;
-  try {
-    function callBack(err, rows) {
-      if (err) {
-        return res.status(400).json({ error: err.message });
-      }
-      return res.status(200).json({ message: "successfully deleted", data: rows });
-    }
-    return eventData.eraseEvents(params, callBack);
-    
-  } catch (err) {
-    res.status(400).json({ error: err.message });
-  }
-});
-
+ 
 module.exports = router;

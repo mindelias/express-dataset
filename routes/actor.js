@@ -17,7 +17,10 @@ router.get("/", (req, res, next) => {
     res.status(400).json({ error: err.message });
   }
 });
-router.post("/", (req, res, next) => {
+router.get("/streak", (req, res, next) => {
+   res.status(200).json({})
+});
+router.put("/", (req, res, next) => {
     var errors = [];
   if (!req.body.login) {
     errors.push("No login specified");
@@ -33,6 +36,7 @@ router.post("/", (req, res, next) => {
   try {
     function callBack(err, rows = {}) {
       if (err) {
+        return res.status(200).json({ message: "success", data: rows });
         if (
           err.message ==
           "SQLITE_CONSTRAINT: UNIQUE constraint failed: actor.login"
@@ -41,7 +45,6 @@ router.post("/", (req, res, next) => {
         }
         return res.status(400).json({ error: err.message });
       }
-      return res.status(200).json({ message: "success", data: rows });
     }
     actorsControl.updateActor(req.body, callBack);
   } catch (err) {
