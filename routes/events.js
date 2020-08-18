@@ -29,13 +29,13 @@ router.get("/actors/:id", (req, res, next) => {
 });
 
 router.post("/", async (req, res, next) => {
-  return eventData.addEvent(req.body, callBack);
   function callBack(err, rows = {}) {
     if (err) {
       return res.status(400).json({ error: err.message });
     }
     return res.status(201).json(rows);
   }
+  return eventData.addEvent(req.body, callBack);
 });
 
 module.exports = router;
