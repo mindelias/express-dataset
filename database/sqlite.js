@@ -13,10 +13,10 @@ const db = new sqlite3.Database(DBSOURCE, (err) => {
     console.log("Connected to the SQLite database.");
     db.run(
       `CREATE TABLE IF NOT EXISTS event (
-            id INTEGER PRIMARY KEY AUTOINCREMENT,
+            id INTEGER PRIMARY KEY UNIQUE,
             type text,
             actor_id INTEGER,
-            created_at datetime default current_timestamp,
+            created_at datetime,
             FOREIGN KEY(actor_id) REFERENCES actor(id) 
             )`,
       (err) => {
@@ -28,7 +28,7 @@ const db = new sqlite3.Database(DBSOURCE, (err) => {
     );
     db.run(
       `CREATE TABLE IF NOT EXISTS actor (
-            id INTEGER PRIMARY KEY AUTOINCREMENT,
+            id INTEGER PRIMARY KEY,
             login text,
             avatar_url text,
             created_at datetime default current_timestamp
@@ -42,12 +42,13 @@ const db = new sqlite3.Database(DBSOURCE, (err) => {
     );
     db.run(
       `CREATE TABLE IF NOT EXISTS repo (
-            id INTEGER PRIMARY KEY AUTOINCREMENT,
+            id INTEGER PRIMARY KEY,
             name text,
             url text,
             actor_id INTEGER,
-            created_at datetime default current_timestamp,
-            FOREIGN KEY(actor_id) REFERENCES actor(id) 
+            event_id INTEGER,
+            FOREIGN KEY(actor_id) REFERENCES actor(id),
+            FOREIGN KEY(event_id) REFERENCES event(id)
             )`,
       (err) => {
         if (err) {
@@ -58,8 +59,10 @@ const db = new sqlite3.Database(DBSOURCE, (err) => {
     );
   }
 
-  // db.run(`DROP TABLE event`);
 });
+// db.run(`DROP TABLE event`);
+// db.run(`DROP TABLE repo`);
+// db.run(`DROP TABLE actor`);
 module.exports = db;
 
 // db.run(
