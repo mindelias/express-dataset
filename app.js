@@ -1,3 +1,5 @@
+import "core-js/stable";
+import "regenerator-runtime/runtime";
 var express = require("express");
 var path = require("path");
 var favicon = require("serve-favicon");
@@ -9,7 +11,6 @@ var index = require("./routes/index");
 var eraseEvents = require("./routes/eraseEvents");
 var events = require("./routes/events");
 var actor = require("./routes/actor");
-const auth = require("./middleware/auth");
 
 var app = express();
 

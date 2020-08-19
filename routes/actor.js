@@ -1,59 +1,65 @@
-const express = require("express");
-const actorsControl = require("../controllers/actors");
-const router = express.Router();
+var express = require("express");
+var router = express.Router();
+import actorsController from "../controllers/actors";
+import eventValidator from "../middleware/validation";
 
 // Routes related to actor.
-
-router.get("/", (req, res, next) => {
-  //  return res.status(200).json();
+router.get("/", async (req, res, next) => {
   try {
-    function callBack(err, rows) {
-      if (err) {
-        return res.status(400).json({ error: err.message });
-      }
-      return res.status(200).json(rows);
-    }
-    return actorsControl.getAllActors(callBack);
-  } catch (err) {
-    return res.status(400).json({ error: err.message });
+    const allActors = await actorsController.getAllActors();
+    return res.status(200).json(allActors);
+  } catch (error) {
+    console.log(error);
+    return res.status(500).json({
+      success: false,
+      message: "Something went wrong",
+    });
   }
 });
-router.get("/streak", (req, res, next) => {
-  res.status(200).json([
-    {
-      id: 1139424092,
-      type: "PushEvent",
-      actor: {
-        id: 1087596,
-        login: "jason96",
-        avatar_url: "https://avatars.com/1087596",
-      },
-      repo: {
-        id: 406290,
-        name: "jason96/perferendis",
-        url: "https://github.com/jason96/perferendis",
-      },
-      created_at: "2013-02-11 22:13:31",
-    },
-  ]);
-});
-router.put("/", async (req, res, next) => {
-  const {id}= req.body
-  try {
-    function callBack(err, rows = {}) {
-      if (err) {
-        return res.status(400).json({ error: err.message });
-      } else if (rows.length==0) {
-         return res.status(404).json({
-           success: false,
-           message: `Actor with id:${id} not found`,
-         });
-      }
-      return res.status(200).json({ body: rows });
+
+router.put(
+  "/",
+  async (req, res, next) => {
+    console.log(req.body.id);
+    const { id } = req.body;
+    const actorCheck = await eventValidator.updateActor(id);
+    if (!actorCheck) {
+      return res.status(404).json({
+        success: false,
+        message: `Actor with id:${id} not found`,
+      });
     }
-    actorsControl.updateActor(req.body, callBack);
-  } catch (err) {
-   return res.status(400).json({ error: err.message });
+    next();
+  },
+  async (req, res, next) => {
+    try {
+      const { id, avatar_url } = req.body;
+      console.log("updatedActor");
+      const updatedActor = await actorsController.updateActor(id, avatar_url);
+      console.log(updatedActor);
+      return res.status(200).json({
+        success: true,
+        data: "updated successfully",
+      });
+    } catch (error) {
+      return res.status(500).json({
+        success: false,
+        message: "Something went wrong",
+      });
+    }
+  }
+);
+
+router.get("/streak", async (req, res, next) => {
+  try {
+    const allActors = await actorsController.getAllActors();
+    return res.status(200).json(allActors);
+  } catch (error) {
+    console.log(error);
+    return res.status(500).json({
+      success: false,
+      message: "Something went wrong",
+    });
   }
 });
 
